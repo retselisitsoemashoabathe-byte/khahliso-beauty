@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Khahliso Beauty · Your glow starts here</title>
+    <meta
+      name="description"
+      content="Book makeup, nails, lashes and wig installation at Khahliso Beauty, Olympic Building Room 4, Maseru. Booking fee from R100 by M-Pesa, EcoCash or card."
+    />
+    <meta name="theme-color" content="#100D0A" />
+    <link rel="icon" href="/logo.png" />
+    <script>
+      (function () {
+        var redirect = sessionStorage.getItem("khahliso-redirect")
+        if (!redirect) return
+        sessionStorage.removeItem("khahliso-redirect")
+        if (redirect !== location.href) history.replaceState(null, "", redirect)
+      })()
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
