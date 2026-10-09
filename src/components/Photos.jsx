@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { FACEBOOK, FACEBOOK_NAME, INSTAGRAM, INSTAGRAM_HANDLE } from "../../shared/catalog.js"
+import { FACEBOOK, FACEBOOK_NAME, INSTAGRAM, INSTAGRAM_HANDLE, TIKTOK } from "../../shared/catalog.js"
+import { FacebookIcon, InstagramIcon, TikTokIcon } from "./Icons.jsx"
 
 const PHOTOS = [
   { file: "01-blonde-glam.jpg", alt: "Blonde bob with full glam and a red lip", kind: "Makeup" },
@@ -74,10 +75,16 @@ export default function Photos() {
       </div>
       <p className="photo-socials">
         <a href={INSTAGRAM} target="_blank" rel="noreferrer">
-          Instagram {INSTAGRAM_HANDLE}
+          <InstagramIcon />
+          <span>Instagram {INSTAGRAM_HANDLE}</span>
         </a>
         <a href={FACEBOOK} target="_blank" rel="noreferrer">
-          Facebook · {FACEBOOK_NAME}
+          <FacebookIcon />
+          <span>Facebook · {FACEBOOK_NAME}</span>
+        </a>
+        <a href={TIKTOK} target="_blank" rel="noreferrer">
+          <TikTokIcon />
+          <span>TikTok @khahlisobeauty</span>
         </a>
       </p>
       {active ? (

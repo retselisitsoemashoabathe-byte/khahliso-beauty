@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link, Outlet, useLocation } from "react-router-dom"
+import { FacebookIcon, InstagramIcon, TikTokIcon } from "./Icons.jsx"
 import {
   FACEBOOK,
   FACEBOOK_NAME,
@@ -32,6 +33,15 @@ export default function Layout() {
     if (node) node.scrollIntoView({ behavior: "smooth", block: "start" })
   }, [location])
 
+  useEffect(() => {
+    if (!open) return undefined
+    const onKey = (event) => {
+      if (event.key === "Escape") setOpen(false)
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [open])
+
   return (
     <>
       <div className="atmosphere" aria-hidden="true" />
@@ -42,37 +52,44 @@ export default function Layout() {
         <Link to="/" className="brand">
           Khahliso
         </Link>
-        <button
-          className="nav-toggle"
-          type="button"
-          aria-expanded={open}
-          aria-controls="site-nav"
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? "Close" : "Menu"}
-        </button>
+        <div className="nav-end">
+          <div className="nav-social">
+            <a href={INSTAGRAM} target="_blank" rel="noreferrer" aria-label={`Instagram ${INSTAGRAM_HANDLE}`}>
+              <InstagramIcon />
+            </a>
+            <a href={FACEBOOK} target="_blank" rel="noreferrer" aria-label={`Facebook ${FACEBOOK_NAME}`}>
+              <FacebookIcon />
+            </a>
+            <a href={TIKTOK} target="_blank" rel="noreferrer" aria-label="TikTok @khahlisobeauty">
+              <TikTokIcon />
+            </a>
+          </div>
+          <Link to="/book" className="nav-book">
+            Book · R100
+          </Link>
+          <button
+            className={open ? "nav-toggle open" : "nav-toggle"}
+            type="button"
+            aria-expanded={open}
+            aria-controls="site-nav"
+            aria-label={open ? "Close menu" : "Open menu"}
+            onClick={() => setOpen((value) => !value)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+          <p className={live ? "live on" : "live"}>
+            <span />
+            {live ? "Open now" : "Closed now"}
+          </p>
+        </div>
         <nav id="site-nav" className={open ? "site-nav open" : "site-nav"}>
           <Link to="/#services">Services</Link>
           <Link to="/#prices">Prices</Link>
           <Link to="/photos">Photos</Link>
           <Link to="/#visit">Visit</Link>
-          <a href={INSTAGRAM} target="_blank" rel="noreferrer">
-            Instagram
-          </a>
-          <a href={FACEBOOK} target="_blank" rel="noreferrer">
-            Facebook
-          </a>
-          <a href={TIKTOK} target="_blank" rel="noreferrer">
-            TikTok
-          </a>
         </nav>
-        <Link to="/book" className="nav-book">
-          Book · R100
-        </Link>
-        <p className={live ? "live on" : "live"}>
-          <span />
-          {live ? "Open now" : "Closed now"}
-        </p>
       </header>
       <main id="content">
         <Outlet />
@@ -87,14 +104,17 @@ export default function Layout() {
           <a href={WHATSAPP} target="_blank" rel="noreferrer">
             WhatsApp
           </a>
-          <a href={INSTAGRAM} target="_blank" rel="noreferrer">
-            Instagram {INSTAGRAM_HANDLE}
+          <a className="with-icon" href={INSTAGRAM} target="_blank" rel="noreferrer">
+            <InstagramIcon />
+            <span>Instagram {INSTAGRAM_HANDLE}</span>
           </a>
-          <a href={FACEBOOK} target="_blank" rel="noreferrer">
-            Facebook · {FACEBOOK_NAME}
+          <a className="with-icon" href={FACEBOOK} target="_blank" rel="noreferrer">
+            <FacebookIcon />
+            <span>Facebook · {FACEBOOK_NAME}</span>
           </a>
-          <a href={TIKTOK} target="_blank" rel="noreferrer">
-            TikTok @khahlisobeauty
+          <a className="with-icon" href={TIKTOK} target="_blank" rel="noreferrer">
+            <TikTokIcon />
+            <span>TikTok @khahlisobeauty</span>
           </a>
         </div>
         <div>
