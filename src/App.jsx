@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom"
 import Layout from "./components/Layout.jsx"
 import Home from "./components/Home.jsx"
+import Photos from "./components/Photos.jsx"
 import Booking from "./components/Booking.jsx"
 import Studio from "./components/Studio.jsx"
 
@@ -9,6 +10,7 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/photos" element={<Photos />} />
         <Route path="/book" element={<Booking />} />
         <Route path="/studio" element={<Studio />} />
       </Route>

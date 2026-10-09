@@ -128,6 +128,73 @@ p { margin: 0; }
 .live.on span { background: var(--gold); }
 .nav-toggle { display: none; }
 
+.photos h1 { font-size: clamp(2.2rem, 4vw, 3.4rem); }
+.photo-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+.photo-filters button {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--cream);
+  padding: 0.45rem 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.74rem;
+  cursor: pointer;
+}
+.photo-filters button.on { background: var(--gold); color: var(--black); border-color: var(--gold); }
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+.photo-card {
+  padding: 0;
+  border: 1px solid var(--line);
+  background: #100d0a;
+  cursor: pointer;
+  overflow: hidden;
+}
+.photo-card img {
+  width: 100%;
+  height: 340px;
+  object-fit: cover;
+  object-position: center 18%;
+}
+.photo-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.4rem;
+  margin-top: 1.4rem;
+}
+.photo-socials a { color: var(--gold); }
+.photo-view {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  padding: 4vh 4vw;
+  background: rgba(16, 13, 10, 0.94);
+}
+.photo-view figure { margin: 0; max-width: min(920px, 100%); }
+.photo-view img { max-height: 78vh; width: auto; margin-inline: auto; }
+.photo-view figcaption { margin-top: 0.7rem; text-align: center; color: var(--gold); }
+.photo-view button {
+  display: block;
+  margin: 0.7rem auto 0;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 0.4rem 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
 .hero, .band, .book, .studio, .footer {
   width: min(1120px, calc(100% - 10vw));
   margin-inline: auto;
@@ -431,9 +498,11 @@ p { margin: 0; }
   }
   .site-nav.open { display: flex; }
   .live { display: none; }
-  .hero, .visit, .service-grid, .menu-grid, .pay-layout, .footer {
+  .hero, .visit, .service-grid, .menu-grid, .pay-layout, .footer, .photo-grid {
     grid-template-columns: 1fr;
   }
+  .photo-grid { grid-template-columns: 1fr 1fr; }
+  .photo-card img { height: 240px; }
   .hero { padding-top: 1.6rem; }
   .hero-portrait { margin-top: 0.4rem; }
   .hero-portrait img { height: 420px; }

@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react"
 import { Link, Outlet, useLocation } from "react-router-dom"
-import { isOpen, PHONE_DISPLAY, PHONE_TEL, TIKTOK, WHATSAPP } from "../../shared/catalog.js"
+import {
+  FACEBOOK,
+  FACEBOOK_NAME,
+  INSTAGRAM,
+  INSTAGRAM_HANDLE,
+  isOpen,
+  PHONE_DISPLAY,
+  PHONE_TEL,
+  TIKTOK,
+  WHATSAPP,
+} from "../../shared/catalog.js"
 
 export default function Layout() {
   const [open, setOpen] = useState(false)
@@ -44,7 +54,14 @@ export default function Layout() {
         <nav id="site-nav" className={open ? "site-nav open" : "site-nav"}>
           <Link to="/#services">Services</Link>
           <Link to="/#prices">Prices</Link>
+          <Link to="/photos">Photos</Link>
           <Link to="/#visit">Visit</Link>
+          <a href={INSTAGRAM} target="_blank" rel="noreferrer">
+            Instagram
+          </a>
+          <a href={FACEBOOK} target="_blank" rel="noreferrer">
+            Facebook
+          </a>
           <a href={TIKTOK} target="_blank" rel="noreferrer">
             TikTok
           </a>
@@ -70,8 +87,14 @@ export default function Layout() {
           <a href={WHATSAPP} target="_blank" rel="noreferrer">
             WhatsApp
           </a>
+          <a href={INSTAGRAM} target="_blank" rel="noreferrer">
+            Instagram {INSTAGRAM_HANDLE}
+          </a>
+          <a href={FACEBOOK} target="_blank" rel="noreferrer">
+            Facebook · {FACEBOOK_NAME}
+          </a>
           <a href={TIKTOK} target="_blank" rel="noreferrer">
-            @khahlisobeauty
+            TikTok @khahlisobeauty
           </a>
         </div>
         <div>

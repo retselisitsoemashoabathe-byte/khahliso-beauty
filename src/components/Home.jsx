@@ -41,6 +41,9 @@ export default function Home() {
             <a className="btn ghost" href="#prices">
               See the price list
             </a>
+            <Link className="btn ghost" to="/photos">
+              See the photos
+            </Link>
           </div>
         </div>
         <figure className="hero-portrait">

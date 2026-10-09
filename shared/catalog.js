@@ -4,6 +4,10 @@ export const PHONE_DISPLAY = "5951 4576"
 export const PHONE_TEL = "+26659514576"
 export const WHATSAPP = "https://wa.me/26659514576"
 export const TIKTOK = "https://www.tiktok.com/@khahlisobeauty"
+export const INSTAGRAM = "https://www.instagram.com/khahlisobeauty/"
+export const INSTAGRAM_HANDLE = "@khahlisobeauty"
+export const FACEBOOK_NAME = "Khahliso Makhalanyane"
+export const FACEBOOK = "https://www.facebook.com/search/people/?q=Khahliso%20Makhalanyane"
 export const ADDRESS_LINES = ["Olympic Building, Room 4", "Ground Floor, Maseru"]
 export const MAP_URL =
   "https://www.google.com/maps/search/?api=1&query=Olympic+Building+Maseru"
