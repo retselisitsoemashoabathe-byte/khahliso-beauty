@@ -269,7 +269,7 @@ export default function Studio() {
             )}
           </section>
           <h2>Bookings</h2>
-          <p className="muted">Match every M-Pesa and EcoCash code against the phone before the client sits.</p>
+          <p className="muted">Check the phone on each booking before the client sits.</p>
           {rows.length === 0 ? (
             <p>No bookings yet.</p>
           ) : (

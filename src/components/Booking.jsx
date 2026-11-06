@@ -4,7 +4,6 @@ import {
   ADDONS,
   FEE,
   MENU,
-  PHONE_DISPLAY,
   WHATSAPP,
   balanceDue,
   findService,
@@ -36,8 +35,6 @@ export default function Booking() {
   const [notes, setNotes] = useState("")
   const [photo, setPhoto] = useState("")
   const [method, setMethod] = useState("mpesa")
-  const [payerPhone, setPayerPhone] = useState("")
-  const [transactionCode, setTransactionCode] = useState("")
   const [card, setCard] = useState(emptyCard)
   const [error, setError] = useState("")
   const [busy, setBusy] = useState(false)
@@ -115,16 +112,7 @@ export default function Booking() {
       payload.cardLast4 = digits.slice(-4)
       payload.cardBrand = brandOf(digits)
     } else {
-      if (payerPhone.replace(/\D/g, "").length < 8) {
-        setError("Enter the number you paid from.")
-        return
-      }
-      if (!/^[A-Za-z0-9]{5,24}$/.test(transactionCode.trim())) {
-        setError("Enter the transaction code from your SMS.")
-        return
-      }
-      payload.payerPhone = payerPhone
-      payload.transactionCode = transactionCode
+      payload.payerPhone = phone
     }
 
     setBusy(true)
@@ -431,27 +419,9 @@ export default function Booking() {
             ) : (
               <div className="pay-fields">
                 <p className="pay-help">
-                  Send <strong>R{FEE}</strong> by {method === "mpesa" ? "M-Pesa" : "EcoCash"} to{" "}
-                  <strong>{PHONE_DISPLAY}</strong>. Then enter the code from the SMS so the studio can
-                  match your payment.
+                  Pay <strong>R{FEE}</strong> with {method === "mpesa" ? "M-Pesa" : "EcoCash"} on{" "}
+                  <strong>{phone}</strong>. Nothing else to type.
                 </p>
-                <label className="field">
-                  Number you paid from
-                  <input
-                    value={payerPhone}
-                    inputMode="tel"
-                    onChange={(event) => setPayerPhone(event.target.value)}
-                    placeholder="5951 4576"
-                  />
-                </label>
-                <label className="field">
-                  {method === "mpesa" ? "M-Pesa" : "EcoCash"} transaction code
-                  <input
-                    value={transactionCode}
-                    onChange={(event) => setTransactionCode(event.target.value.toUpperCase())}
-                    placeholder="From your SMS"
-                  />
-                </label>
               </div>
             )}
 
@@ -505,7 +475,9 @@ function Receipt({ booking }) {
   const payLine =
     booking.paymentMethod === "card"
       ? `${booking.cardBrand || "Card"} ending ${booking.cardLast4}`
-      : `${methodLabel} · ${booking.transactionCode}`
+      : booking.transactionCode
+        ? `${methodLabel} · ${booking.transactionCode}`
+        : `${methodLabel} on ${booking.phone}`
   const text = encodeURIComponent(
     [
       `Khahliso Beauty booking ${booking.id}.`,
@@ -537,7 +509,7 @@ function Receipt({ booking }) {
             : `${money(booking.balance)} is due when you arrive.`}
       </p>
       {booking.offline ? (
-        <p>Send this on WhatsApp so the studio receives your booking and payment code.</p>
+        <p>Send this on WhatsApp so the studio receives your booking.</p>
       ) : null}
       {booking.hasPhoto ? <p>Your reference photo is saved with this booking.</p> : null}
       <p>Show this reference at Olympic Building, Room 4. We will also reach you on {booking.phone}.</p>

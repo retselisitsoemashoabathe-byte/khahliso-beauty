@@ -205,14 +205,14 @@ export function createApi() {
     let cardBrand = ""
 
     if (method === "mpesa" || method === "ecocash") {
-      payerPhone = clean(body.payerPhone, 20)
+      payerPhone = clean(body.payerPhone || phone, 20)
       transactionCode = clean(body.transactionCode, 24).toUpperCase()
       if (payerPhone.replace(/\D/g, "").length < 8) {
-        res.status(400).json({ error: "Enter the number you paid from." })
+        res.status(400).json({ error: "Enter a phone number we can reach." })
         return
       }
-      if (!/^[A-Z0-9]{5,24}$/.test(transactionCode)) {
-        res.status(400).json({ error: "Enter the transaction code from your SMS." })
+      if (transactionCode && !/^[A-Z0-9]{5,24}$/.test(transactionCode)) {
+        res.status(400).json({ error: "That payment reference could not be read." })
         return
       }
     } else {
