@@ -1,38 +1,30 @@
 import { useEffect, useState } from "react"
 import { FACEBOOK, FACEBOOK_NAME, INSTAGRAM, INSTAGRAM_HANDLE, TIKTOK } from "../../shared/catalog.js"
+import { GALLERY, galleryRows } from "../../shared/gallery.js"
 import { FacebookIcon, InstagramIcon, TikTokIcon } from "./Icons.jsx"
-
-const PHOTOS = [
-  { file: "01-blonde-glam.jpg", alt: "Blonde bob with full glam and a red lip", kind: "Makeup" },
-  { file: "03-gold-glam.jpg", alt: "Gold eyeshadow and a red lip", kind: "Makeup" },
-  { file: "16-braids-red-lip.jpg", alt: "Braids with gold eyeshadow and a red lip", kind: "Makeup" },
-  { file: "21-pink-top-glam.jpg", alt: "Braided style with a bright red lip", kind: "Makeup" },
-  { file: "15-pink-bonnet-glam.jpg", alt: "Soft glam with a pink bonnet", kind: "Makeup" },
-  { file: "04-curly-install.jpg", alt: "Curly install with purple eyeshadow", kind: "Installs" },
-  { file: "14-straight-install.jpg", alt: "Long straight install", kind: "Installs" },
-  { file: "13-ponytail-install.jpg", alt: "Sleek ponytail install", kind: "Installs" },
-  { file: "18-beaded-braids.jpg", alt: "Beaded braids and soft glam", kind: "Installs" },
-  { file: "02-braids-soft-glam.jpg", alt: "Long braids with a soft brown glam", kind: "Makeup" },
-  { file: "20-braid-glam.jpg", alt: "Cornrow braids with a gold earring", kind: "Makeup" },
-  { file: "17-gold-bonnet-glam.jpg", alt: "Glam with a gold and black bonnet", kind: "Makeup" },
-  { file: "05-smoky-glam.jpg", alt: "Smoky eye with a glossy nude lip", kind: "Makeup" },
-  { file: "19-blue-smoky-glam.jpg", alt: "Blue smoky eye", kind: "Makeup" },
-  { file: "06-pink-brown-nails.jpg", alt: "Pink and brown stiletto nails with silver beads", kind: "Nails" },
-  { file: "09-pink-stiletto-nails.jpg", alt: "Hot pink stiletto nails with gold lines", kind: "Nails" },
-  { file: "08-red-floral-nails.jpg", alt: "Red and pink nails with flowers and gold", kind: "Nails" },
-  { file: "10-pink-flower-nails.jpg", alt: "Pink nails with flowers and a gold oval", kind: "Nails" },
-  { file: "11-zebra-nails.jpg", alt: "Pink nails with zebra tips and white flowers", kind: "Nails" },
-  { file: "12-nude-floral-nails.jpg", alt: "Nude stiletto nails with a pink flower", kind: "Nails" },
-  { file: "07-french-nails.jpg", alt: "Mauve French nails", kind: "Nails" },
-]
 
 const FILTERS = ["All", "Makeup", "Nails", "Installs"]
 
 export default function Photos() {
+  const [photos, setPhotos] = useState(GALLERY)
   const [filter, setFilter] = useState("All")
   const [active, setActive] = useState(null)
   const base = import.meta.env.BASE_URL
-  const shown = filter === "All" ? PHOTOS : PHOTOS.filter((photo) => photo.kind === filter)
+  const shown = filter === "All" ? photos : photos.filter((photo) => photo.kind === filter)
+
+  useEffect(() => {
+    let ignore = false
+    fetch(`${base}gallery.json`, { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        const rows = galleryRows(data)
+        if (!ignore && rows) setPhotos(rows)
+      })
+      .catch(() => {})
+    return () => {
+      ignore = true
+    }
+  }, [base])
 
   useEffect(() => {
     if (!active) return undefined
@@ -66,13 +58,17 @@ export default function Photos() {
           </button>
         ))}
       </div>
-      <div className="photo-grid">
-        {shown.map((photo) => (
-          <button key={photo.file} type="button" className="photo-card" aria-label={photo.alt} onClick={() => setActive(photo)}>
-            <img src={`${base}photos/${photo.file}`} alt={photo.alt} />
-          </button>
-        ))}
-      </div>
+      {shown.length === 0 ? (
+        <p className="section-note">No photos in this set yet.</p>
+      ) : (
+        <div className="photo-grid">
+          {shown.map((photo) => (
+            <button key={photo.id} type="button" className="photo-card" aria-label={photo.alt} onClick={() => setActive(photo)}>
+              <img src={`${base}photos/${photo.file}`} alt={photo.alt} />
+            </button>
+          ))}
+        </div>
+      )}
       <p className="photo-socials">
         <a href={INSTAGRAM} target="_blank" rel="noreferrer">
           <InstagramIcon />

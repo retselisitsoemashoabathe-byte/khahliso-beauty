@@ -10,9 +10,12 @@ import {
   slotsFor,
   todayISO,
 } from "../shared/catalog.js"
+import { GALLERY, GALLERY_KINDS, galleryRows } from "../shared/gallery.js"
 
 const DATA = path.resolve("data/bookings.json")
 const PHOTOS = path.resolve("data/inspiration")
+const GALLERY_FILE = path.resolve("public/gallery.json")
+const GALLERY_DIR = path.resolve("public/photos")
 const ADMIN_KEY = "khahliso100"
 
 function readBookings() {
@@ -44,20 +47,101 @@ function newId(rows) {
   return `KH-${Date.now().toString().slice(-6)}`
 }
 
-function savePhoto(id, dataUrl) {
-  if (!dataUrl) return false
-  const match = /^data:image\/jpeg;base64,([A-Za-z0-9+/=\s]+)$/.exec(String(dataUrl))
+function jpegBuffer(dataUrl, max = 1_600_000) {
+  const match = /^data:image\/jpeg;base64,([A-Za-z0-9+/=\s]+)$/.exec(String(dataUrl || ""))
   if (!match) return null
   const buffer = Buffer.from(match[1].replace(/\s/g, ""), "base64")
-  if (buffer.length < 80 || buffer.length > 1_600_000) return null
+  if (buffer.length < 80 || buffer.length > max) return null
+  return buffer
+}
+
+function savePhoto(id, dataUrl) {
+  if (!dataUrl) return false
+  const buffer = jpegBuffer(dataUrl)
+  if (!buffer) return null
   fs.mkdirSync(PHOTOS, { recursive: true })
   fs.writeFileSync(path.join(PHOTOS, `${id}.jpg`), buffer)
   return true
 }
 
+function readGallery() {
+  try {
+    const rows = galleryRows(JSON.parse(fs.readFileSync(GALLERY_FILE, "utf8")))
+    if (rows) return rows
+  } catch {
+    /* use the photos shipped with the site */
+  }
+  return GALLERY.map((row) => ({ ...row }))
+}
+
+function writeGallery(rows) {
+  fs.mkdirSync(GALLERY_DIR, { recursive: true })
+  fs.writeFileSync(GALLERY_FILE, JSON.stringify(rows, null, 2))
+}
+
 export function createApi() {
   const app = express()
-  app.use(express.json({ limit: "3mb" }))
+  app.use(express.json({ limit: "4mb" }))
+
+  app.get("/api/gallery", (_req, res) => {
+    res.json(readGallery())
+  })
+
+  app.post("/api/gallery", (req, res) => {
+    if (req.header("x-admin-key") !== ADMIN_KEY) {
+      res.status(401).json({ error: "That studio key is not right." })
+      return
+    }
+    const kind = clean(req.body?.kind, 12)
+    const alt = clean(req.body?.alt, 120)
+    if (!GALLERY_KINDS.includes(kind)) {
+      res.status(400).json({ error: "Choose Makeup, Nails or Installs." })
+      return
+    }
+    if (alt.length < 2) {
+      res.status(400).json({ error: "Add a short description of the photo." })
+      return
+    }
+    const buffer = jpegBuffer(req.body?.photo, 2_200_000)
+    if (!buffer) {
+      res.status(400).json({ error: "That photo could not be saved. Use a JPG or PNG." })
+      return
+    }
+    const rows = readGallery()
+    const used = new Set(rows.map((row) => row.id))
+    let id = `g${Date.now().toString(36)}`
+    if (used.has(id)) id = `g${Date.now().toString(36)}${used.size}`
+    fs.mkdirSync(GALLERY_DIR, { recursive: true })
+    fs.writeFileSync(path.join(GALLERY_DIR, `${id}.jpg`), buffer)
+    rows.unshift({ id, file: `${id}.jpg`, alt, kind })
+    writeGallery(rows)
+    res.status(201).json(rows)
+  })
+
+  app.delete("/api/gallery/:id", (req, res) => {
+    if (req.header("x-admin-key") !== ADMIN_KEY) {
+      res.status(401).json({ error: "That studio key is not right." })
+      return
+    }
+    const id = clean(req.params.id, 48)
+    if (!/^[a-z0-9-]{2,48}$/.test(id)) {
+      res.status(404).json({ error: "Photo not found." })
+      return
+    }
+    const rows = readGallery()
+    const next = rows.filter((row) => row.id !== id)
+    if (next.length === rows.length) {
+      res.status(404).json({ error: "Photo not found." })
+      return
+    }
+    const file = path.resolve(GALLERY_DIR, `${id}.jpg`)
+    const relative = path.relative(GALLERY_DIR, file)
+    if (!relative.startsWith("..") && !path.isAbsolute(relative) && fs.existsSync(file)) {
+      fs.unlinkSync(file)
+    }
+    writeGallery(next)
+    res.json(next)
+  })
 
   app.get("/api/availability", (req, res) => {
     const date = clean(req.query.date, 10)

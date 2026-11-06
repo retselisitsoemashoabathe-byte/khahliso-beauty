@@ -1,0 +1,43 @@
+export const GALLERY_KINDS = ["Makeup", "Nails", "Installs"]
+
+export const GALLERY = [
+  { id: "01-blonde-glam", file: "01-blonde-glam.jpg", alt: "Blonde bob with full glam and a red lip", kind: "Makeup" },
+  { id: "03-gold-glam", file: "03-gold-glam.jpg", alt: "Gold eyeshadow and a red lip", kind: "Makeup" },
+  { id: "16-braids-red-lip", file: "16-braids-red-lip.jpg", alt: "Braids with gold eyeshadow and a red lip", kind: "Makeup" },
+  { id: "21-pink-top-glam", file: "21-pink-top-glam.jpg", alt: "Braided style with a bright red lip", kind: "Makeup" },
+  { id: "15-pink-bonnet-glam", file: "15-pink-bonnet-glam.jpg", alt: "Soft glam with a pink bonnet", kind: "Makeup" },
+  { id: "04-curly-install", file: "04-curly-install.jpg", alt: "Curly install with purple eyeshadow", kind: "Installs" },
+  { id: "14-straight-install", file: "14-straight-install.jpg", alt: "Long straight install", kind: "Installs" },
+  { id: "13-ponytail-install", file: "13-ponytail-install.jpg", alt: "Sleek ponytail install", kind: "Installs" },
+  { id: "18-beaded-braids", file: "18-beaded-braids.jpg", alt: "Beaded braids and soft glam", kind: "Installs" },
+  { id: "02-braids-soft-glam", file: "02-braids-soft-glam.jpg", alt: "Long braids with a soft brown glam", kind: "Makeup" },
+  { id: "20-braid-glam", file: "20-braid-glam.jpg", alt: "Cornrow braids with a gold earring", kind: "Makeup" },
+  { id: "17-gold-bonnet-glam", file: "17-gold-bonnet-glam.jpg", alt: "Glam with a gold and black bonnet", kind: "Makeup" },
+  { id: "05-smoky-glam", file: "05-smoky-glam.jpg", alt: "Smoky eye with a glossy nude lip", kind: "Makeup" },
+  { id: "19-blue-smoky-glam", file: "19-blue-smoky-glam.jpg", alt: "Blue smoky eye", kind: "Makeup" },
+  { id: "06-pink-brown-nails", file: "06-pink-brown-nails.jpg", alt: "Pink and brown stiletto nails with silver beads", kind: "Nails" },
+  { id: "09-pink-stiletto-nails", file: "09-pink-stiletto-nails.jpg", alt: "Hot pink stiletto nails with gold lines", kind: "Nails" },
+  { id: "08-red-floral-nails", file: "08-red-floral-nails.jpg", alt: "Red and pink nails with flowers and gold", kind: "Nails" },
+  { id: "10-pink-flower-nails", file: "10-pink-flower-nails.jpg", alt: "Pink nails with flowers and a gold oval", kind: "Nails" },
+  { id: "11-zebra-nails", file: "11-zebra-nails.jpg", alt: "Pink nails with zebra tips and white flowers", kind: "Nails" },
+  { id: "12-nude-floral-nails", file: "12-nude-floral-nails.jpg", alt: "Nude stiletto nails with a pink flower", kind: "Nails" },
+  { id: "07-french-nails", file: "07-french-nails.jpg", alt: "Mauve French nails", kind: "Nails" },
+]
+
+export function galleryRows(value) {
+  if (!Array.isArray(value)) return null
+  const rows = []
+  for (const row of value) {
+    if (!row || typeof row !== "object") continue
+    const id = String(row.id || "")
+    if (!/^[a-z0-9-]{2,48}$/.test(id)) continue
+    if (!GALLERY_KINDS.includes(row.kind)) continue
+    const alt = String(row.alt || "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 120)
+    if (alt.length < 2) continue
+    rows.push({ id, file: `${id}.jpg`, alt, kind: row.kind })
+  }
+  return rows
+}
